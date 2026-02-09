@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — Breath App</title>
+    <meta name="description" content="Privacy Policy for Breath, the mindful breathing app for iOS.">
+    <meta name="theme-color" content="#06061a">
+    <link rel="icon" type="image/png" href="breathing_logo(3) 1.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #06061a;
+            --glass: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #8b92a8;
+            --text-tertiary: #555c72;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #7b68ee;
+            --accent-pink: #ff6b9d;
+            --accent-mint: #00e5a0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== Animated Background ===== */
+        .bg-layer {
+            position: fixed; inset: 0; z-index: 0;
+            overflow: hidden; pointer-events: none;
+        }
+        .bg-orb {
+            position: absolute; border-radius: 50%;
+            filter: blur(80px); opacity: 0.2;
+            animation: floatOrb 20s ease-in-out infinite;
+        }
+        .bg-orb:nth-child(1) {
+            width: 450px; height: 450px;
+            background: radial-gradient(circle, var(--accent-cyan), transparent 70%);
+            top: -8%; left: -8%;
+        }
+        .bg-orb:nth-child(2) {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, var(--accent-purple), transparent 70%);
+            bottom: -10%; right: -10%;
+            animation-delay: -7s; animation-duration: 25s;
+        }
+        .bg-orb:nth-child(3) {
+            width: 350px; height: 350px;
+            background: radial-gradient(circle, var(--accent-mint), transparent 70%);
+            top: 50%; left: 40%;
+            animation-delay: -12s; animation-duration: 22s;
+        }
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -20px) scale(1.04); }
+            50% { transform: translate(-15px, 15px) scale(0.96); }
+            75% { transform: translate(20px, 30px) scale(1.02); }
+        }
+
+        .bg-grid {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .page-wrapper { position: relative; z-index: 1; }
+
+        /* ===== Navbar ===== */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 14px 0;
+            background: rgba(6, 6, 26, 0.75);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .nav-inner {
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 780px; margin: 0 auto; padding: 0 24px;
+        }
+        .nav-logo {
+            display: flex; align-items: center; gap: 12px;
+            text-decoration: none; color: var(--text-primary);
+        }
+        .nav-logo img { width: 34px; height: 34px; border-radius: 8px; }
+        .nav-logo span { font-weight: 700; font-size: 1.15em; letter-spacing: -0.02em; }
+        .nav-back {
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.88em; font-weight: 500; transition: color 0.3s;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .nav-back:hover { color: var(--text-primary); }
+
+        /* ===== Content ===== */
+        .privacy-header {
+            padding: 140px 0 50px;
+            text-align: center;
+        }
+        .privacy-header .shield {
+            width: 64px; height: 64px; border-radius: 16px;
+            background: rgba(0, 212, 255, 0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px; margin: 0 auto 24px;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+        }
+        .privacy-header h1 {
+            font-size: clamp(2em, 5vw, 2.8em);
+            font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px;
+        }
+        .privacy-header .updated {
+            color: var(--text-tertiary); font-size: 0.88em;
+        }
+
+        .content-wrapper {
+            max-width: 720px; margin: 0 auto;
+            padding: 0 24px 80px;
+        }
+
+        .policy-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 32px 30px;
+            margin-bottom: 16px;
+            transition: border-color 0.3s;
+        }
+        .policy-card:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .policy-card .card-header {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 16px;
+        }
+        .policy-card .card-icon {
+            width: 38px; height: 38px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink: 0;
+        }
+
+        .policy-card:nth-child(1) .card-icon { background: rgba(0, 212, 255, 0.08); }
+        .policy-card:nth-child(2) .card-icon { background: rgba(0, 229, 160, 0.08); }
+        .policy-card:nth-child(3) .card-icon { background: rgba(123, 104, 238, 0.08); }
+        .policy-card:nth-child(4) .card-icon { background: rgba(255, 107, 157, 0.08); }
+        .policy-card:nth-child(5) .card-icon { background: rgba(255, 165, 0, 0.08); }
+        .policy-card:nth-child(6) .card-icon { background: rgba(74, 144, 217, 0.08); }
+        .policy-card:nth-child(7) .card-icon { background: rgba(0, 212, 255, 0.08); }
+
+        .policy-card h2 {
+            font-size: 1.1em; font-weight: 700;
+        }
+        .policy-card p {
+            color: var(--text-secondary); font-size: 0.92em; line-height: 1.75;
+        }
+        .policy-card strong { color: var(--text-primary); }
+        .policy-card a {
+            color: var(--accent-cyan); text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .policy-card a:hover { opacity: 0.8; text-decoration: underline; }
+
+        .checklist {
+            list-style: none; padding: 0; margin-top: 12px;
+        }
+        .checklist li {
+            color: var(--text-secondary); font-size: 0.92em;
+            line-height: 1.75; padding-left: 28px; position: relative;
+        }
+        .checklist li::before {
+            content: '✓';
+            position: absolute; left: 0; top: 0;
+            color: var(--accent-mint); font-weight: 700; font-size: 0.95em;
+        }
+
+        /* ===== Highlight Banner ===== */
+        .privacy-highlight {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.06), rgba(0, 229, 160, 0.06));
+            border: 1px solid rgba(0, 212, 255, 0.12);
+            border-radius: 20px;
+            padding: 32px 30px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .privacy-highlight .big-icon {
+            font-size: 42px; margin-bottom: 14px;
+        }
+        .privacy-highlight h3 {
+            font-size: 1.2em; font-weight: 700; margin-bottom: 8px;
+        }
+        .privacy-highlight p {
+            color: var(--text-secondary); font-size: 0.95em; line-height: 1.7;
+            max-width: 480px; margin: 0 auto;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            padding: 36px 0; border-top: 1px solid var(--glass-border);
+        }
+        .footer-inner {
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 14px;
+            max-width: 720px; margin: 0 auto; padding: 0 24px;
+        }
+        .footer-copy { color: var(--text-tertiary); font-size: 0.83em; }
+        .footer-links { display: flex; gap: 22px; list-style: none; }
+        .footer-links a {
+            color: var(--text-tertiary); text-decoration: none;
+            font-size: 0.83em; transition: color 0.3s;
+        }
+        .footer-links a:hover { color: var(--text-primary); }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 600px) {
+            .privacy-header { padding: 120px 0 36px; }
+            .privacy-header h1 { font-size: 1.8em; }
+            .policy-card { padding: 24px 20px; }
+            .footer-inner { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-layer">
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+</div>
+<div class="bg-grid"></div>
+
+<div class="page-wrapper">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">
+                <img src="breathing_logo(3) 1.png" alt="Breath">
+                <span>Breath</span>
+            </a>
+            <a href="index.html" class="nav-back">← Back to Home</a>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="privacy-header">
+        <div class="shield">🔒</div>
+        <h1>Privacy Policy</h1>
+        <p class="updated">Last updated: February 9, 2026</p>
+    </section>
+
+    <!-- Content -->
+    <div class="content-wrapper">
+
+        <!-- Highlight -->
+        <div class="privacy-highlight">
+            <div class="big-icon">🛡️</div>
+            <h3>Your Privacy is Our Priority</h3>
+            <p>Breath collects <strong>zero personal data</strong>. Everything stays on your device. No tracking, no analytics, no exceptions.</p>
+        </div>
+
+        <!-- Sections -->
+        <div class="policy-card">
+            <div class="card-header">
+                <div class="card-icon">📋</div>
+                <h2>Introduction</h2>
+            </div>
+            <p>Breath ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we handle information when you use our iOS mobile application. By using Breath, you agree to the practices described in this policy.</p>
+        </div>
+
+        <div class="policy-card">
+            <div class="card-header">
+                <div class="card-icon">🔍</div>
+                <h2>Information We Collect</h2>
+            </div>
+            <p>We are proud to say that <strong>Breath does not collect any personal data whatsoever</strong>. We believe in your fundamental right to privacy.</p>
+            <ul class="checklist">
+                <li>We do not collect personal information</li>
+                <li>We do not track your location</li>
+                <li>We do not use analytics or tracking tools</li>
+                <li>We do not use cookies or similar technologies</li>
+                <li>We do not share any data with third parties</li>
+                <li>We do not store any data on external servers</li>
+            </ul>
+        </div>
+
+        <div class="policy-card">
+            <div class="card-header">
+                <div class="card-icon">💾</div>
+                <h2>Data Storage</h2>
+            </div>
+            <p>All app data — including your breathing session history, statistics, exercise preferences, daily task progress, and notification settings — is stored <strong>locally on your device only</strong>. We have no access to this data, and it is never transmitted to any external server or service. If you delete the app, all data is permanently removed.</p>
+        </div>
+
+        <div class="policy-card">
+            <div class="card-header">
+                <div class="card-icon">🔗</div>
+                <h2>Third-Party Services</h2>
+            </div>
+            <p>Breath does not integrate, embed, or rely on any third-party services, SDKs, or APIs that collect user data. The app operates entirely independently and offline.</p>
+        </div>
+
+        <div class="policy-card">
+            <div class="card-header">
+                <div class="card-icon">👶</div>
+                <h2>Children's Privacy</h2>
+            </div>
+            <p>Because our app does not collect any personal information from anyone, it is safe for users of all ages, including children under the age of 13. We comply with COPPA (Children's Online Privacy Protection Act) and similar regulations worldwide.</p>
+        </div>
+
+        <div class="policy-card">
+            <div class="card-header">
+                <div class="card-icon">📝</div>
+                <h2>Changes to This Policy</h2>
+            </div>
+            <p>We may update this Privacy Policy from time to time to reflect changes in our practices or for legal, operational, or regulatory reasons. Any changes will be reflected on this page with an updated revision date. We encourage you to review this policy periodically.</p>
+        </div>
+
+        <div class="policy-card">
+            <div class="card-header">
+                <div class="card-icon">✉️</div>
+                <h2>Contact Us</h2>
+            </div>
+            <p>If you have any questions, concerns, or feedback about this Privacy Policy or our data practices, please don't hesitate to contact us at:<br><br><a href="mailto:hocuaf@gmail.com">hocuaf@gmail.com</a></p>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <span class="footer-copy">© 2026 Breath. All rights reserved.</span>
+            <ul class="footer-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="mailto:hocuaf@gmail.com">Contact</a></li>
+            </ul>
+        </div>
+    </footer>
+
+</div>
+
+</body>
+</html>

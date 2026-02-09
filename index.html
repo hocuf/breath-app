@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breath — Mindful Breathing App</title>
+    <meta name="description" content="Breath is your personal breathing companion. Master breath holding, exhale control, and guided exercises with beautiful animations.">
+    <meta name="theme-color" content="#06061a">
+    <link rel="icon" type="image/png" href="breathing_logo(3) 1.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #06061a;
+            --glass: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.07);
+            --text-primary: #ffffff;
+            --text-secondary: #8b92a8;
+            --text-tertiary: #555c72;
+            --accent-cyan: #00d4ff;
+            --accent-blue: #4a90d9;
+            --accent-purple: #7b68ee;
+            --accent-pink: #ff6b9d;
+            --accent-mint: #00e5a0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== Animated Background ===== */
+        .bg-layer {
+            position: fixed; inset: 0; z-index: 0;
+            overflow: hidden; pointer-events: none;
+        }
+        .bg-orb {
+            position: absolute; border-radius: 50%;
+            filter: blur(80px); opacity: 0.25;
+            animation: floatOrb 20s ease-in-out infinite;
+        }
+        .bg-orb:nth-child(1) {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, var(--accent-cyan), transparent 70%);
+            top: -10%; left: -10%;
+        }
+        .bg-orb:nth-child(2) {
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, var(--accent-purple), transparent 70%);
+            top: 40%; right: -15%;
+            animation-delay: -7s; animation-duration: 25s;
+        }
+        .bg-orb:nth-child(3) {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, var(--accent-pink), transparent 70%);
+            bottom: -5%; left: 30%;
+            animation-delay: -14s; animation-duration: 22s;
+        }
+        .bg-orb:nth-child(4) {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, var(--accent-mint), transparent 70%);
+            top: 20%; left: 50%;
+            animation-delay: -3s; animation-duration: 28s;
+        }
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(40px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(30px, 40px) scale(1.02); }
+        }
+
+        .bg-grid {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .page-wrapper { position: relative; z-index: 1; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+        /* ===== Navbar ===== */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 14px 0;
+            background: rgba(6, 6, 26, 0.75);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .nav-inner {
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+        }
+        .nav-logo {
+            display: flex; align-items: center; gap: 12px;
+            text-decoration: none; color: var(--text-primary);
+        }
+        .nav-logo img { width: 34px; height: 34px; border-radius: 8px; }
+        .nav-logo span { font-weight: 700; font-size: 1.15em; letter-spacing: -0.02em; }
+        .nav-links { display: flex; gap: 28px; list-style: none; }
+        .nav-links a {
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.88em; font-weight: 500; transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--text-primary); }
+
+        /* ===== Hero ===== */
+        .hero { padding: 160px 0 80px; text-align: center; }
+        .app-icon-hero {
+            width: 96px; height: 96px; border-radius: 22px;
+            margin: 0 auto 36px;
+            box-shadow: 0 8px 48px rgba(0, 212, 255, 0.18);
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--glass); border: 1px solid var(--glass-border);
+            border-radius: 50px; padding: 7px 18px;
+            font-size: 0.82em; color: var(--accent-cyan);
+            margin-bottom: 28px; font-weight: 500;
+        }
+        .hero-badge .dot {
+            width: 6px; height: 6px; background: var(--accent-mint);
+            border-radius: 50%; animation: pulseDot 2s ease-in-out infinite;
+        }
+        @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .hero h1 {
+            font-size: clamp(2.8em, 7vw, 5.2em);
+            font-weight: 900; letter-spacing: -0.03em;
+            line-height: 1.06; margin-bottom: 22px;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero-sub {
+            font-size: 1.15em; color: var(--text-secondary);
+            max-width: 520px; margin: 0 auto 44px; line-height: 1.7;
+        }
+        .hero-cta {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            color: var(--bg-primary); text-decoration: none;
+            padding: 15px 34px; border-radius: 14px;
+            font-weight: 700; font-size: 0.98em;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 28px rgba(0, 212, 255, 0.22);
+        }
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 40px rgba(0, 212, 255, 0.35);
+        }
+        .hero-cta svg { width: 20px; height: 20px; }
+
+        /* ===== Section Shared ===== */
+        .section-label {
+            text-align: center; font-size: 0.78em; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.15em;
+            color: var(--accent-cyan); margin-bottom: 10px;
+        }
+        .section-title {
+            text-align: center; font-size: clamp(1.8em, 4vw, 2.8em);
+            font-weight: 800; letter-spacing: -0.02em; margin-bottom: 14px;
+        }
+        .section-desc {
+            text-align: center; color: var(--text-secondary);
+            max-width: 480px; margin: 0 auto 56px; line-height: 1.7; font-size: 0.98em;
+        }
+
+        /* ===== Screenshots ===== */
+        .screenshots-section { padding: 80px 0; }
+        .screenshots-scroll {
+            display: flex; gap: 18px; overflow-x: auto;
+            padding: 16px 24px 36px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .screenshots-scroll::-webkit-scrollbar { display: none; }
+        .screenshot-card {
+            flex: 0 0 auto; width: 215px;
+            scroll-snap-align: center; transition: transform 0.4s ease;
+        }
+        .screenshot-card:hover { transform: translateY(-8px) scale(1.02); }
+        .screenshot-card img {
+            width: 100%; border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ===== Features ===== */
+        .features-section { padding: 100px 0; }
+        .features-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 18px; margin-top: 56px;
+        }
+        .feature-card {
+            background: var(--glass); border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 34px 26px;
+            transition: background 0.3s, transform 0.3s, border-color 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .feature-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .feature-card:hover {
+            background: var(--glass-hover); transform: translateY(-4px);
+            border-color: rgba(255,255,255,0.12);
+        }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-icon {
+            width: 46px; height: 46px; border-radius: 13px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 21px; margin-bottom: 18px;
+        }
+        .feature-card:nth-child(1) .feature-icon { background: rgba(0, 212, 255, 0.1); }
+        .feature-card:nth-child(2) .feature-icon { background: rgba(123, 104, 238, 0.1); }
+        .feature-card:nth-child(3) .feature-icon { background: rgba(255, 107, 157, 0.1); }
+        .feature-card:nth-child(4) .feature-icon { background: rgba(0, 229, 160, 0.1); }
+        .feature-card:nth-child(5) .feature-icon { background: rgba(255, 165, 0, 0.1); }
+        .feature-card:nth-child(6) .feature-icon { background: rgba(74, 144, 217, 0.1); }
+        .feature-card h3 { font-size: 1.05em; font-weight: 700; margin-bottom: 8px; }
+        .feature-card p { color: var(--text-secondary); font-size: 0.88em; line-height: 1.65; }
+
+        /* ===== Techniques ===== */
+        .techniques-section { padding: 100px 0; }
+        .techniques-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 22px; margin-top: 56px;
+        }
+        .technique-card {
+            position: relative; background: var(--glass);
+            border: 1px solid var(--glass-border); border-radius: 24px;
+            padding: 40px 26px; text-align: center; overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .technique-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.12); }
+        .technique-card::after {
+            content: ''; position: absolute; inset: 0; border-radius: 24px; opacity: 0.05;
+        }
+        .technique-card:nth-child(1)::after { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); }
+        .technique-card:nth-child(2)::after { background: linear-gradient(135deg, var(--accent-mint), #00b8d4); }
+        .technique-card:nth-child(3)::after { background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink)); }
+        .technique-emoji { font-size: 46px; margin-bottom: 18px; position: relative; z-index: 1; }
+        .technique-card h3 { font-size: 1.25em; font-weight: 700; margin-bottom: 6px; position: relative; z-index: 1; }
+        .technique-pattern {
+            font-size: 0.82em; font-weight: 600; color: var(--accent-cyan);
+            margin-bottom: 12px; position: relative; z-index: 1;
+        }
+        .technique-card p { color: var(--text-secondary); font-size: 0.88em; line-height: 1.6; position: relative; z-index: 1; }
+
+        /* ===== Scoring ===== */
+        .scoring-section { padding: 100px 0; }
+        .scoring-table {
+            max-width: 680px; margin: 56px auto 0;
+            border-radius: 20px; overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+        .scoring-row {
+            display: flex; align-items: center; padding: 16px 26px;
+            background: var(--glass); border-bottom: 1px solid var(--glass-border);
+            transition: background 0.2s;
+        }
+        .scoring-row:last-child { border-bottom: none; }
+        .scoring-row:hover { background: var(--glass-hover); }
+        .scoring-emoji { font-size: 26px; width: 46px; text-align: center; }
+        .scoring-info { flex: 1; margin-left: 14px; }
+        .scoring-info h4 { font-weight: 700; font-size: 0.98em; }
+        .scoring-info span { font-size: 0.82em; color: var(--text-secondary); }
+        .scoring-badge {
+            font-size: 0.78em; font-weight: 600; padding: 5px 13px;
+            border-radius: 8px; background: rgba(0, 212, 255, 0.08); color: var(--accent-cyan);
+        }
+
+        /* ===== FAQ ===== */
+        .support-section { padding: 100px 0; }
+        .faq-list { max-width: 680px; margin: 56px auto 0; }
+        .faq-item {
+            background: var(--glass); border: 1px solid var(--glass-border);
+            border-radius: 16px; margin-bottom: 10px; overflow: hidden;
+        }
+        .faq-question {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 26px; cursor: pointer;
+            font-weight: 600; font-size: 0.93em;
+            transition: color 0.3s; user-select: none;
+        }
+        .faq-question:hover { color: var(--accent-cyan); }
+        .faq-question .arrow {
+            font-size: 1.1em; transition: transform 0.3s; color: var(--text-tertiary);
+        }
+        .faq-item.open .faq-question .arrow { transform: rotate(180deg); }
+        .faq-answer {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+        }
+        .faq-item.open .faq-answer { max-height: 200px; padding: 0 26px 20px; }
+        .faq-answer p { color: var(--text-secondary); line-height: 1.7; font-size: 0.88em; }
+        .faq-answer a { color: var(--accent-cyan); text-decoration: none; }
+        .faq-answer a:hover { text-decoration: underline; }
+
+        /* ===== Contact ===== */
+        .contact-section { padding: 100px 0; }
+        .contact-card {
+            background: var(--glass); border: 1px solid var(--glass-border);
+            border-radius: 24px; padding: 56px 36px; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .contact-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(0,212,255,0.03), rgba(123,104,238,0.03));
+            pointer-events: none;
+        }
+        .contact-card h2 { font-size: 1.9em; font-weight: 800; margin-bottom: 10px; position: relative; }
+        .contact-card > p { color: var(--text-secondary); margin-bottom: 28px; font-size: 1.02em; position: relative; }
+        .contact-email {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: white; text-decoration: none;
+            padding: 13px 30px; border-radius: 14px;
+            font-weight: 600; font-size: 0.93em;
+            transition: transform 0.3s, box-shadow 0.3s; position: relative;
+        }
+        .contact-email:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(123, 104, 238, 0.3);
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            padding: 36px 0; border-top: 1px solid var(--glass-border);
+        }
+        .footer-inner {
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 14px;
+        }
+        .footer-copy { color: var(--text-tertiary); font-size: 0.83em; }
+        .footer-links { display: flex; gap: 22px; list-style: none; }
+        .footer-links a {
+            color: var(--text-tertiary); text-decoration: none;
+            font-size: 0.83em; transition: color 0.3s;
+        }
+        .footer-links a:hover { color: var(--text-primary); }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero { padding: 130px 0 50px; }
+            .hero h1 { font-size: 2.4em; }
+            .hero-sub { font-size: 1em; }
+            .features-grid, .techniques-grid { grid-template-columns: 1fr; }
+            .screenshot-card { width: 175px; }
+            .contact-card { padding: 36px 22px; }
+            .contact-card h2 { font-size: 1.4em; }
+            .footer-inner { flex-direction: column; text-align: center; }
+        }
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 2em; }
+            .app-icon-hero { width: 70px; height: 70px; border-radius: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-layer">
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+    <div class="bg-orb"></div>
+</div>
+<div class="bg-grid"></div>
+
+<div class="page-wrapper">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">
+                <img src="breathing_logo(3) 1.png" alt="Breath">
+                <span>Breath</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#techniques">Techniques</a></li>
+                <li><a href="#screenshots">Screenshots</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="privacy.html">Privacy</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <img src="breathing_logo(3) 1.png" alt="Breath" class="app-icon-hero">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                Available on the App Store
+            </div>
+            <h1>Breathe Better.<br><span class="gradient-text">Live Better.</span></h1>
+            <p class="hero-sub">Master breath holding, exhale control, and guided breathing exercises. Track your progress and unlock your full potential.</p>
+            <a href="#" class="hero-cta">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                Download on the App Store
+            </a>
+        </div>
+    </section>
+
+    <!-- Screenshots -->
+    <section class="screenshots-section" id="screenshots">
+        <div class="container">
+            <p class="section-label">App Preview</p>
+            <h2 class="section-title">See It in Action</h2>
+            <p class="section-desc">Beautiful, distraction-free interface designed to keep you present and focused on your breathing.</p>
+        </div>
+        <div class="screenshots-scroll">
+            <div style="min-width:24px"></div>
+            <div class="screenshot-card"><img src="ios_app/1.jpg" alt="Training modes"></div>
+            <div class="screenshot-card"><img src="ios_app/2.jpg" alt="Breath hold"></div>
+            <div class="screenshot-card"><img src="ios_app/3.jpg" alt="Exhale control"></div>
+            <div class="screenshot-card"><img src="ios_app/4.jpg" alt="Guided exercise"></div>
+            <div class="screenshot-card"><img src="ios_app/5.jpg" alt="Statistics"></div>
+            <div class="screenshot-card"><img src="ios_app/6.jpg" alt="History"></div>
+            <div class="screenshot-card"><img src="ios_app/7.jpg" alt="Settings"></div>
+            <div class="screenshot-card"><img src="ios_app/8.jpg" alt="Daily tasks"></div>
+            <div class="screenshot-card"><img src="ios_app/9.jpg" alt="Notifications"></div>
+            <div style="min-width:24px"></div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <p class="section-label">Features</p>
+            <h2 class="section-title">Everything You Need</h2>
+            <p class="section-desc">Powerful tools to build a consistent breathing practice and track your progress over time.</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Customizable Sessions</h3>
+                    <p>Configure inhale, hold, exhale, and rest durations. Set your cycles from 1 to 20 and tailor every session to your level.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Detailed Statistics</h3>
+                    <p>Track daily, weekly, and monthly performance with bar charts, best scores, and average durations at a glance.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3>Performance Scoring</h3>
+                    <p>Earn ranks from beginner to diver level as you improve. Push yourself with a fun, gamified rating system.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>Daily Tasks</h3>
+                    <p>Stay consistent with auto-generated daily challenges. Complete breath holds, exhales, and exercises to build your streak.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h3>Smart Reminders</h3>
+                    <p>Set custom notification times with motivational messages. Choose daily or weekday-only reminders to fit your schedule.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Multi-Language</h3>
+                    <p>Full support for English and Turkish. Switch languages instantly from settings without restarting the app.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Techniques -->
+    <section class="techniques-section" id="techniques">
+        <div class="container">
+            <p class="section-label">Training Modes</p>
+            <h2 class="section-title">Three Ways to Train</h2>
+            <p class="section-desc">From breath holding to guided exercises — choose the mode that suits your goals.</p>
+            <div class="techniques-grid">
+                <div class="technique-card">
+                    <div class="technique-emoji">🫁</div>
+                    <h3>Breath Hold</h3>
+                    <div class="technique-pattern">Up to 120 seconds</div>
+                    <p>Press and hold to test your limits. Watch the circle expand as you push further with haptic feedback every 10 seconds.</p>
+                </div>
+                <div class="technique-card">
+                    <div class="technique-emoji">🌬️</div>
+                    <h3>Exhale Control</h3>
+                    <div class="technique-pattern">Slow & Controlled</div>
+                    <p>Master the art of slow exhalation. The circle shrinks as you sustain your breath, building lung capacity and control.</p>
+                </div>
+                <div class="technique-card">
+                    <div class="technique-emoji">🧘‍♂️</div>
+                    <h3>Guided Exercise</h3>
+                    <div class="technique-pattern">Inhale → Hold → Exhale → Rest</div>
+                    <p>Follow a fully customizable breathing cycle with smooth animations. Set your own durations and number of cycles.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scoring -->
+    <section class="scoring-section" id="scoring">
+        <div class="container">
+            <p class="section-label">Gamification</p>
+            <h2 class="section-title">Track Your Level</h2>
+            <p class="section-desc">See how you rank and challenge yourself to reach new heights.</p>
+            <div class="scoring-table">
+                <div class="scoring-row">
+                    <div class="scoring-emoji">😮‍💨</div>
+                    <div class="scoring-info"><h4>Beginner</h4><span>0 – 10 seconds</span></div>
+                    <div class="scoring-badge">Start Here</div>
+                </div>
+                <div class="scoring-row">
+                    <div class="scoring-emoji">💪</div>
+                    <div class="scoring-info"><h4>Improving</h4><span>10 – 20 seconds</span></div>
+                    <div class="scoring-badge">Keep Going</div>
+                </div>
+                <div class="scoring-row">
+                    <div class="scoring-emoji">🔥</div>
+                    <div class="scoring-info"><h4>Good</h4><span>20 – 30 seconds</span></div>
+                    <div class="scoring-badge">On Fire</div>
+                </div>
+                <div class="scoring-row">
+                    <div class="scoring-emoji">🏊‍♂️</div>
+                    <div class="scoring-info"><h4>Swimmer</h4><span>30 – 45 seconds</span></div>
+                    <div class="scoring-badge">Impressive</div>
+                </div>
+                <div class="scoring-row">
+                    <div class="scoring-emoji">⭐️</div>
+                    <div class="scoring-info"><h4>Excellent</h4><span>45 – 60 seconds</span></div>
+                    <div class="scoring-badge">Star Level</div>
+                </div>
+                <div class="scoring-row">
+                    <div class="scoring-emoji">🤿</div>
+                    <div class="scoring-info"><h4>Diver</h4><span>60+ seconds</span></div>
+                    <div class="scoring-badge">Elite</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="support-section" id="faq">
+        <div class="container">
+            <p class="section-label">Support</p>
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <p class="section-desc">Everything you need to know about Breath.</p>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        How do I start a breathing session?
+                        <span class="arrow">▾</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Open the app, choose your training mode (Hold, Exhale, or Exercise), configure your settings if needed, and press the start button. Follow the animated circle to guide your breathing.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Is the app free to use?
+                        <span class="arrow">▾</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! Breath is completely free with no ads, no subscriptions, and no in-app purchases. All features are available from day one.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Does the app work offline?
+                        <span class="arrow">▾</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely. Breath works 100% offline. All your data is stored locally on your device — no internet connection required.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Can I customize the breathing exercises?
+                        <span class="arrow">▾</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes. In Guided Exercise mode, you can configure inhale, hold, exhale, and rest durations as well as the number of cycles. Your preferences are saved automatically.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        How do I set up reminders?
+                        <span class="arrow">▾</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Go to Settings, enable notifications, and add your preferred times. You can choose between daily or weekday-only reminders with motivational messages.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Is my data private?
+                        <span class="arrow">▾</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes. We collect zero personal data. Everything is stored locally on your device and never leaves it. Read our <a href="privacy.html">Privacy Policy</a> for details.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <div class="contact-card">
+                <h2>Need Help?</h2>
+                <p>Questions, feedback, or bug reports — we'd love to hear from you.</p>
+                <a href="mailto:hocuaf@gmail.com" class="contact-email">✉️ hocuaf@gmail.com</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <span class="footer-copy">© 2026 Breath. All rights reserved.</span>
+                <ul class="footer-links">
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="mailto:hocuaf@gmail.com">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+</body>
+</html>
