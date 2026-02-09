@@ -2,20 +2,43 @@
 //  ContentView.swift
 //  breath
 //
-//  Created by Abdullah Fat'h HOCU on 19.11.2025.
+//  Created on 2025-11-19.
 //
 
 import SwiftUI
 
 struct ContentView: View {
+    @ObservedObject private var localizationManager = LocalizationManager.shared
+    @ObservedObject private var dataManager = DataManager.shared
+    @AppStorage("isDarkMode") private var isDarkMode = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView {
+            // Training Tab with 3 modes
+            TrainingView()
+                .tabItem {
+                    Label("tab_training".localized, systemImage: "figure.mind.and.body")
+                }
+            
+            // History Tab
+            HistoryView()
+                .tabItem {
+                    Label("tab_history".localized, systemImage: "clock.fill")
+                }
+            
+            // Statistics Tab
+            StatsView()
+                .tabItem {
+                    Label("tab_stats".localized, systemImage: "chart.bar.fill")
+                }
+            
+            // Settings Tab
+            SettingsView()
+                .tabItem {
+                    Label("tab_settings".localized, systemImage: "gearshape.fill")
+                }
         }
-        .padding()
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }
 
